@@ -1,13 +1,18 @@
 apply plugin: 'com.android.application'
 
-def mCompileSdkVersion = 29
-def mApplicationId = "com.example.myapplication"
+//def mApplicationId = "com.example.myapplication"
+
+//定义扩展属性
+ext {
+    applicationId = "com.example.myapplication"
+}
 
 android {
-    compileSdkVersion mCompileSdkVersion
+    compileSdkVersion this.compileSdkVersion
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId mApplicationId
+//        applicationId mApplicationId
+        applicationId this.applicationId
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 1

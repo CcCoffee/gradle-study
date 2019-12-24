@@ -107,3 +107,8 @@ subprojects { Project project ->
         apply from: '../publishToMaven.gradle'
     }
 }
+subprojects { Project project ->
+    ext {
+        compileSdkVersion = 29
+    }
+}
