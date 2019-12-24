@@ -14,7 +14,7 @@ android {
 //        applicationId mApplicationId
         applicationId this.applicationId
         minSdkVersion 24
-        targetSdkVersion 29
+        targetSdkVersion mTargetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

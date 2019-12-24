@@ -97,8 +97,10 @@ project('app') { Project project ->
     }
 }
 
-project('mylibrary') {Project project ->
-    apply plugin: 'com.android.library'
+if(hasProperty('isLoadMylibrary')?isLoadMylibrary.toBoolean():false){
+    project('mylibrary') {Project project ->
+        apply plugin: 'com.android.library'
+    }
 }
 
 //println project('app').group

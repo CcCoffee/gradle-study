@@ -1,4 +1,8 @@
-include ':app', ':mylibrary'
+//include ':app', ':mylibrary'
+include ':app'
+if(hasProperty('isLoadMylibrary')?isLoadMylibrary.toBoolean():false){
+    include ':mylibrary'
+}
 rootProject.name='My Application'
 
 
