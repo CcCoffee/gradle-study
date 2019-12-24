@@ -4,11 +4,11 @@ buildscript {
     repositories {
         google()
         jcenter()
-        
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.2'
-        
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -18,7 +18,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+
     }
 }
 
@@ -42,7 +42,6 @@ this.afterEvaluate {
 this.gradle.buildStarted {
     println "构建阶段执行开始..." // 执行./gradlew clean && ./gradlew build没有执行此方法
 }
-
 /**
  * gradle执行完毕之后的回调监听
  */
@@ -51,6 +50,35 @@ this.gradle.buildFinished {
 }
 
 this.gradle.beforeProject {}
-
 this.gradle.afterProject {}
 
+this.getProjects()
+this.getSubProjects()
+
+def getProjects() {
+    println '------------------------------------------------------------'
+    println 'Root project'
+    println '------------------------------------------------------------'
+    println ''
+    this.getAllprojects().eachWithIndex { Project entry, int i ->
+        if (i == 0) {
+            println "Root project '${entry.name}'"
+        } else if (i == 1) {
+            println "+--- Project ':${entry.name}'"
+        } else {
+            println "\\--- Project ':${entry.name}'"
+        }
+    }
+    println ''
+}
+
+def getSubProjects() {
+    println '------------------------------------------------------------'
+    println 'Sub project'
+    println '------------------------------------------------------------'
+    println ''
+    this.getSubprojects().each { Project entry ->
+        println "+--- Project ':${entry.name}'"
+    }
+    println ''
+}
