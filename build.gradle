@@ -14,11 +14,13 @@ buildscript {
     }
 }
 
+//配置当前节点项目和子项目的公用配置
 allprojects {
+    group 'com.imooc'
+    version '1.0.0-snapshot'
     repositories {
         google()
         jcenter()
-
     }
 }
 
@@ -52,8 +54,8 @@ this.gradle.buildFinished {
 this.gradle.beforeProject {}
 this.gradle.afterProject {}
 
-this.getProjects()
-this.getSubProjects()
+//this.getProjects()
+//this.getSubProjects()
 
 def getProjects() {
     println '------------------------------------------------------------'
@@ -81,4 +83,27 @@ def getSubProjects() {
         println "+--- Project ':${entry.name}'"
     }
     println ''
+}
+
+project('app') { Project project ->
+    apply plugin: 'com.android.application'
+    dependencies {
+
+    }
+    android {
+
+    }
+}
+
+project('mylibrary') {Project project ->
+    apply plugin: 'com.android.library'
+}
+
+//println project('app').group
+
+//每一个子项目为库工程的项目推送到maven仓库
+subprojects { Project project ->
+    if(project.plugins.hasPlugin('com.android.library')){
+        apply from: '../publishToMaven.gradle'
+    }
 }
