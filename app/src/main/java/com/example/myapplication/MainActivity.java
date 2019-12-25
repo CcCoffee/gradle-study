@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.mylibrary.instants.ENV;
@@ -12,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,5 +54,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
+
+    public void sendMessage(View view){
+        System.out.println("-----------------> sendMessage");
+        EditText editText = findViewById(R.id.editText);
+        String message = editText.getText().toString();
+        Intent intent = new Intent(MainActivity.this, DisplayMessageActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
     }
 }
