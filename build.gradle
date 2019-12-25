@@ -2,17 +2,49 @@
 //file方法会从当前工程中寻找指定文件
 apply from: this.file('common.gradle')
 
+//buildscript {
+//    repositories {
+//        google()
+//        jcenter()
+//
+//    }
+//    dependencies {
+//        classpath 'com.android.tools.build:gradle:3.5.2'
+//
+//        // NOTE: Do not place your application dependencies here; they belong
+//        // in the individual module build.gradle files
+//    }
+//}
+
 buildscript {
-    repositories {
-        google()
-        jcenter()
-
-    }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.2'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        //指定项目为安卓程序
+        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.tencent.tinker:tinker-patch-gradle-plugin:1.9.1'
+    }
+    repositories {
+//        google()
+        jcenter()
+        maven {
+            url 'https://maven.aliyun.com/repository/google'
+            name '阿里云google代理仓库'
+        }
+//        maven {
+//            url 'https://maven.aliyun.com/repository/jcentral'
+//            name '阿里云jcenter代理仓库'
+//        }
+        maven {
+            url 'https://maven.aliyun.com/repository/central'
+            name '阿里云center代理仓库'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/releases'
+            name '阿里云releaes仓库'
+//            credentials {
+//                    username: 'admin'
+//                    password: 'admin123'
+//            }
+        }
     }
 }
 
@@ -115,3 +147,35 @@ subprojects { Project project ->
 //ext {
 //    compileSdkVersion = 29
 //}
+
+println "getRootDir() : ${getRootDir().absolutePath}"
+println "getProjectDir() : ${getProjectDir().absolutePath}"
+println "getBuildDir() : ${getBuildDir().absolutePath}"
+
+//println this.getContent("common.gradle")//相对当前项目路径
+def getContent(String filePath){
+    try{
+        File file = file(filePath)
+        return file.text
+    }catch(GradleException e){
+        return "File ${filePath} not found"
+    }
+}
+
+
+task('apkcopy') {
+    doLast {
+        def sourcePath = this.buildDir.path + "/apk/release/"
+        def destinationPath = '/Users/kevin/Downloads/'
+        def command = "mv -f ${sourcePath} ${destinationPath}"
+        exec {
+            try {
+                executable 'bash'
+                args '-c', command
+                println "The command is execute success"
+            } catch (GradleException e) {
+                println "The command is execute failed"
+            }
+        }
+    }
+}
