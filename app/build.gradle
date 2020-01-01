@@ -60,3 +60,120 @@ fileTree('build/outputs/apk/') { ConfigurableFileTree configurableFileTree ->
         }
     }
 }
+
+// task的两种定义方式
+// 方式一： 直接让project通过task函数去创建并管理所有task
+// 在创建task的时候同时指定最基本的配置，如group和description
+// group会对同个项目下所有相同的group的task进行归并分组
+// description会对每个task进行注释，就像html中title的作用
+task helloTask(group: 'imooc', description: 'task study') {
+    println 'I am hellotask'
+    doFirst {
+        println '3. The task group is :' + group
+    }
+    doFirst {
+        //doFirst可以执行多次
+        println '2. The task description is :' + description
+    }
+}
+
+helloTask.doFirst {
+    println '1. 可以通过task在外面调用doFirst'
+}
+
+// 方式二：通过TaskContainer去创建Task
+this.tasks.create("myTask") {
+    setGroup("imooc")
+    setDescription("task study")
+    println 'I am myTask, created by tasks API'
+}
+
+this.afterEvaluate { Project project ->
+    //保证所有整个工程的task已经配置完毕
+    //强烈建议在这个声明周期方法的闭包中去调用task，因为能够保证task被准备好，不会遇到task找不到异常
+    def startBuildTime, endBuildTime
+    def preBuildTask = project.tasks.getByName('preBuild')
+    preBuildTask.doFirst {
+        startBuildTime = System.currentTimeMillis()
+        println "The start time is : $startBuildTime"
+    }
+    def buildTask = project.tasks.getByName("build")
+    buildTask.doLast {
+        endBuildTime = System.currentTimeMillis()
+        println "The build time is ${(endBuildTime - startBuildTime)/1000} seconds"
+    }
+    def taskX = project.tasks.getByName("taskX")
+    taskX.dependsOn(project.tasks.findAll { Task task ->
+        return task.name.startsWith("lib")
+    })
+}
+
+task lib1 {
+    doLast {
+        println 'lib1'
+    }
+}
+
+task lib2 {
+    doLast {
+        println 'lib2'
+    }
+}
+
+task nolib {
+    doLast {
+        println 'nolib'
+    }
+}
+
+task taskX {
+//    dependsOn this.tasks.findAll {Task task ->
+//        return task.name.startsWith("lib")
+//    }
+    doLast {
+        println 'taskX'
+    }
+}
+
+task taskY {
+    doLast {
+        println 'taskY'
+    }
+}
+
+this.taskY.dependsOn(taskX)
+
+task taskZ ('dependsOn': [taskX, taskY]){
+    doLast {
+        println 'taskZ'
+    }
+}
+
+
+task handleReleaseFile {
+    def destDir = new File(this.buildDir.absolutePath, "/generated/releases")
+    doLast{
+        println '开始解析releases.xml文件...'
+        destDir.mkdir()
+        def file = file("releases.xml")
+        new XmlParser().parse(file).children().each { Node release ->
+            def versionCode = release.versionCode.text()
+            def versionName = release.versionName.text()
+            def versionInfo = release.versionInfo.text()
+            File releaseFile = new File(destDir,versionCode)
+            releaseFile.withWriter {writer ->
+                writer.writeLine("$versionCode -> $versionName -> $versionInfo")
+            }
+        }
+    }
+}
+
+task handleReleaseFileTest ('dependsOn':handleReleaseFile){
+    def targetDir = new File(this.buildDir.absolutePath, "/generated/releases")
+    doLast {
+        fileTree(targetDir).each {File file ->
+            println file.name
+        }
+    }
+}
+
