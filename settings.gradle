@@ -1,5 +1,5 @@
 //include ':app', ':mylibrary'
-include ':app'
+include ':app', ':buildSrc'
 //通过拓展属性决定是不是要加载工程
 if(hasProperty('isLoadMylibrary')?isLoadMylibrary.toBoolean():false){
     include ':mylibrary'
