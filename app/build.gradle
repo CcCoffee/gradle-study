@@ -261,3 +261,24 @@ task taskTest {
         println '输入输出任务结束'
     }
 }
+
+//不为task指定依赖关系也可以实现执行顺序的指定
+task task1{
+    doLast {
+        println "task1"
+    }
+}
+
+task task2{
+    mustRunAfter "task1"
+    doLast {
+        println "task2"
+    }
+}
+
+task task3{
+    mustRunAfter = ["task1", "task2"]
+    doLast {
+        println "task3"
+    }
+}
