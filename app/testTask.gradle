@@ -1,0 +1,102 @@
+/**
+ * task的定义、依赖与执行次序
+ */
+
+
+// task的两种定义方式
+// 方式一： 直接让project通过task函数去创建并管理所有task
+// 在创建task的时候同时指定最基本的配置，如group和description
+// group会对同个项目下所有相同的group的task进行归并分组
+// description会对每个task进行注释，就像html中title的作用
+task helloTask(group: 'imooc', description: 'task study') {
+    println 'I am hellotask'
+    doFirst {
+        println '3. The task group is :' + group
+    }
+    doFirst {
+        //doFirst可以执行多次
+        println '2. The task description is :' + description
+    }
+}
+
+helloTask.doFirst {
+    println '1. 可以通过task在外面调用doFirst'
+}
+
+// 方式二：通过TaskContainer去创建Task
+this.tasks.create("myTask") {
+    setGroup("imooc")
+    setDescription("task study")
+    println 'I am myTask, created by tasks API'
+}
+
+
+//根据task名称动态依赖
+this.afterEvaluate { Project project ->
+    def taskX = project.tasks.getByName("taskX")
+    taskX.dependsOn(project.tasks.findAll { Task task ->
+        return task.name.startsWith("lib")
+    })
+}
+
+task lib1 {
+    doLast {
+        println 'lib1'
+    }
+}
+
+task lib2 {
+    doLast {
+        println 'lib2'
+    }
+}
+
+task nolib {
+    doLast {
+        println 'nolib'
+    }
+}
+
+task taskX {
+//    dependsOn this.tasks.findAll {Task task ->
+//        return task.name.startsWith("lib")
+//    }
+    doLast {
+        println 'taskX'
+    }
+}
+
+task taskY {
+    doLast {
+        println 'taskY'
+    }
+}
+
+this.taskY.dependsOn(taskX)
+
+task taskZ ('dependsOn': [taskX, taskY]){
+    doLast {
+        println 'taskZ'
+    }
+}
+
+//通过mustRunAfter不为task指定依赖关系也可以实现执行顺序的指定
+task task1{
+    doLast {
+        println "task1"
+    }
+}
+
+task task2{
+    mustRunAfter "task1"
+    doLast {
+        println "task2"
+    }
+}
+
+task task3{
+    mustRunAfter = ["task1", "task2"]
+    doLast {
+        println "task3"
+    }
+}

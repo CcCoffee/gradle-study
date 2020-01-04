@@ -1,0 +1,25 @@
+/**
+ * 统计构建阶段执行时间。
+ * 参考执行结果：
+ * > Task :app:build
+ * The build time is 29.829 seconds
+ */
+this.afterEvaluate { Project project ->
+    //保证所有整个工程的task已经配置完毕
+    //强烈建议在这个声明周期方法的闭包中去调用task，因为能够保证task被准备好，不会遇到task找不到异常
+    def startBuildTime, endBuildTime
+    def preBuildTask = project.tasks.getByName('preBuild')
+    preBuildTask.doFirst {
+        startBuildTime = System.currentTimeMillis()
+        println "The start time is : $startBuildTime"
+    }
+    def buildTask = project.tasks.getByName("build")
+    buildTask.doLast {
+        endBuildTime = System.currentTimeMillis()
+        println "The build time is ${(endBuildTime - startBuildTime)/1000} seconds"
+    }
+    def taskX = project.tasks.getByName("taskX")
+    taskX.dependsOn(project.tasks.findAll { Task task ->
+        return task.name.startsWith("lib")
+    })
+}

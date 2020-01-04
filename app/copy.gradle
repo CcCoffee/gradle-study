@@ -1,0 +1,24 @@
+/**
+ * project配置阶段触发执行复制apk文件到指定目录
+ */
+//copy {
+//    from file('proguard-rules.pro')
+//    into this.getRootProject().getRootDir()
+//}
+
+copy {
+    from file("${this.getBuildDir().path}/outputs/apk/")
+    into "${this.getRootProject().getBuildDir().path}/apk/"
+//    exclude('output.json')
+//    rename {'test.apk'}
+}
+
+fileTree('build/outputs/apk/') { ConfigurableFileTree configurableFileTree ->
+    configurableFileTree.visit { FileVisitDetails fileVisitDetails ->
+        println "复制文件${fileVisitDetails.getFile().getName()}"
+        copy {
+            from fileVisitDetails.getFile()
+            into this.getRootProject().getBuildDir().absolutePath + '/test/'
+        }
+    }
+}

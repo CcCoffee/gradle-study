@@ -1,0 +1,29 @@
+/**
+ * 根据解析releases.xml文件的结果在build/generated/releases文件夹下创建多个release信息文件
+ */
+task handleReleaseFile {
+    def destDir = new File(this.buildDir.absolutePath, "/generated/releases")
+    doLast{
+        println '开始解析releases.xml文件...'
+        destDir.mkdir()
+        def file = file("releases.xml")
+        new XmlParser().parse(file).children().each { Node release ->
+            def versionCode = release.versionCode.text()
+            def versionName = release.versionName.text()
+            def versionInfo = release.versionInfo.text()
+            File releaseFile = new File(destDir,versionCode)
+            releaseFile.withWriter {writer ->
+                writer.writeLine("$versionCode -> $versionName -> $versionInfo")
+            }
+        }
+    }
+}
+
+task handleReleaseFileTest ('dependsOn':handleReleaseFile){
+    def targetDir = new File(this.buildDir.absolutePath, "/generated/releases")
+    doLast {
+        fileTree(targetDir).each {File file ->
+            println file.name
+        }
+    }
+}
