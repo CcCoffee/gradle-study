@@ -1,6 +1,14 @@
-//用来存放应用中的所有配置变量，统一管理，而不再是每个moudle里都自己写一份，修改起来更加的方便
+//用来存放应用中的所有配置变量，统一管理，而不再是每个module里都自己写一份，修改起来更加的方便
 ext {
     android = [
-            compileSdkVersion   : 29
+            compileSdkVersion   : 29,
+            versionCode: 1,
+            versionName: "1.0",
+            minSdkVersion: 24,
+            targetSdkVersion: 29,
+            buildToolsVersion: "29.0.2",
+            testInstrumentationRunner: "androidx.test.runner.AndroidJUnitRunner"
     ]
+    java = ['javaVersion': JavaVersion.VERSION_1_7]
+    dependence = ['libSupportV7'           : 'com.android.support:appcompat-v7:25.0.0']
 }
