@@ -28,6 +28,30 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+//    sourceSets {
+//        main {
+//            //为每个业务模块分别创建一个专属的资源文件夹，方便项目资源管理
+//            res.srcDirs = ['src/main/res',
+//            'src/main/res-user',
+//            'src/main/res-player']
+//        }
+//    }
+}
+
+//可以配置在android的闭包外
+this.android.sourceSets {
+    main {
+        //为每个业务模块分别创建一个专属的资源文件夹，方便项目资源管理
+        res.srcDirs = ['src/main/res',
+                       'src/main/res-user',
+                       'src/main/res-player']
+    }
 }
 
 // 为应用程序添加第三方依赖
